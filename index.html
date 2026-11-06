@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<title>THE CHASE — Loading</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b12;color:#fff;font-family:Arial,Helvetica,sans-serif}
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#35465a 0,#182433 35%,#080b12 78%)}
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,8,18,.2),rgba(5,8,15,.4) 55%,#080b12)}
+.sun{position:absolute;width:35vw;height:35vw;max-width:420px;max-height:420px;border-radius:50%;background:radial-gradient(circle,#f4c58a 0,rgba(224,142,93,.4) 35%,transparent 70%);top:14%;left:50%;transform:translateX(-50%);filter:blur(8px);opacity:.65}
+.city{position:absolute;bottom:0;left:0;width:100%;height:42%;display:flex;align-items:flex-end;gap:5px;opacity:.9}
+.building{flex:1;min-width:12px;background:linear-gradient(90deg,#101b29,#263448 50%,#0d1724);box-shadow:inset 0 0 18px #080d16;position:relative}
+.building:after{content:"";position:absolute;inset:12px 8px;background:repeating-linear-gradient(90deg,transparent 0 13px,rgba(255,205,133,.4) 14px 17px),repeating-linear-gradient(0deg,transparent 0 19px,rgba(255,205,133,.28) 20px 22px);opacity:.65}
+.road{position:absolute;bottom:-10%;left:20%;width:60%;height:42%;background:linear-gradient(180deg,transparent,#080b12 65%);clip-path:polygon(42% 0,58% 0,100% 100%,0 100%)}
+.road:after{content:"";position:absolute;left:49%;top:15%;height:90%;width:3px;background:repeating-linear-gradient(180deg,#f6dba1 0 24px,transparent 24px 48px);opacity:.6}
+.loading-content{position:relative;z-index:2;width:min(760px,90vw);text-align:center;margin-top:-2vh;text-shadow:0 3px 18px #000}
+.eyebrow{font-size:11px;letter-spacing:.55em;color:#d8c7a9;margin-bottom:18px}
+.logo{font-size:clamp(48px,10vw,100px);font-weight:1000;letter-spacing:-.07em;line-height:.9;font-style:italic;text-transform:uppercase}
+.logo span{display:block;color:#d8d8d8;font-size:.42em;letter-spacing:.32em;margin-top:13px}
+.tag{font-size:12px;letter-spacing:.26em;color:#c2c9d0;margin-top:30px}
+.bottom{position:absolute;z-index:3;bottom:35px;left:5vw;right:5vw}
+.loadrow{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.18em;color:#e8e8e8;margin-bottom:10px}
+.track{height:3px;background:rgba(255,255,255,.2);overflow:hidden}
+#bar{height:100%;width:0;background:#fff;box-shadow:0 0 14px #fff;transition:width .2s linear}
+.hint{margin-top:12px;font-size:10px;color:#929ba5;letter-spacing:.12em}
+#bsod{display:none;position:fixed;inset:0;background:#087bd2;color:white;padding:7vh 6vw;z-index:10;font-family:"Segoe UI",Arial,sans-serif}
+.sad{font-size:clamp(64px,12vw,110px);font-weight:300;line-height:1;margin:0 0 22px}
+.crash-title{font-size:clamp(16px,3vw,20px);font-weight:400;margin:0 0 55px}
+.crash-info{font-size:12px;line-height:1.8;color:#eaf5ff;max-width:650px}
+.qr{width:76px;height:76px;background:white;padding:6px;margin-top:34px;display:grid;grid-template-columns:repeat(9,1fr);gap:2px}
+.qr i{background:#087bd2}
+.stop{font-size:11px;margin-top:18px;color:#eaf5ff}
+#restart{margin-top:30px;padding:12px 22px;border:1px solid rgba(255,255,255,.7);background:transparent;color:white;font-size:11px;letter-spacing:.2em;cursor:pointer}
+#restart:hover{background:white;color:#087bd2}
+#reboot{display:none;position:fixed;inset:0;background:#05070b;z-index:20;align-items:center;justify-content:center;text-align:center}
+.boottext{font-size:12px;letter-spacing:.3em;color:#b8c3d0}
+.spinner{width:28px;height:28px;border:2px solid #39434f;border-top-color:white;border-radius:50%;margin:25px auto;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){#bsod{padding:8vh 7vw}.crash-title{margin-bottom:35px}.bottom{bottom:22px}.city{height:35%}}
+</style>
+</head>
+<body>
+<main id="loading">
+ <div class="sun"></div><div class="sky"></div>
+ <div class="city" id="city"></div><div class="road"></div>
+ <section class="loading-content">
+  <div class="eyebrow">ANI STUDIO PRESENTS</div>
+  <div class="logo">THE CHASE<span>THE CITY IS YOURS</span></div>
+  <div class="tag">A WORLD WITHOUT LIMITS</div>
+ </section>
+ <footer class="bottom">
+  <div class="loadrow"><span>INITIALIZING WORLD</span><span id="percent">0%</span></div>
+  <div class="track"><div id="bar"></div></div>
+  <div class="hint" id="hint">Preparing the city…</div>
+ </footer>
+</main>
+<section id="bsod" aria-live="assertive">
+ <h1 class="sad">:(</h1>
+ <p class="crash-title">Your PC ran into a problem and needs to restart. We'll restart for you.</p>
+ <div class="crash-info">For more information about this issue and possible fixes, visit https://www.windows.com/stopcode<br><br>If you call a support person, give them this info:</div>
+ <div class="qr" id="qr" aria-hidden="true"></div>
+ <div class="stop">Stop code: BAD SYSTEM CONFIG INFO</div>
+ <button id="restart">RESTART EXPERIENCE ↻</button>
+</section>
+<section id="reboot"><div><div class="boottext">THE CHASE</div><div class="spinner"></div><div class="boottext" id="bootline">RESTARTING EXPERIENCE…</div></div></section>
+<script>
+const city=document.getElementById('city');
+for(let i=0;i<28;i++){const b=document.createElement('div');b.className='building';b.style.height=(18+Math.random()*75)+'%';b.style.flexGrow=(.5+Math.random()*1.8);city.appendChild(b)}
+const qr=document.getElementById('qr');
+for(let i=0;i<81;i++){const cell=document.createElement('i');if(Math.random()>.48)cell.style.opacity='0';qr.appendChild(cell)}
+const loading=document.getElementById('loading'),bsod=document.getElementById('bsod'),reboot=document.getElementById('reboot');
+const bar=document.getElementById('bar'),percent=document.getElementById('percent'),hint=document.getElementById('hint');
+const hints=['Preparing the city…','Loading world assets…','Building the skyline…','Synchronizing traffic…','Almost ready…'];
+let started=0,raf=0,done=false;
+function tick(now){if(!started)started=now;const elapsed=now-started;const p=Math.min(100,elapsed/60000*100);bar.style.width=p+'%';percent.textContent=Math.floor(p)+'%';hint.textContent=hints[Math.min(4,Math.floor(p/20))];if(elapsed>=60000){showCrash();return}raf=requestAnimationFrame(tick)}
+function showCrash(){done=true;cancelAnimationFrame(raf);loading.style.display='none';bsod.style.display='block'}
+function start(){done=false;started=0;bar.style.width='0%';percent.textContent='0%';hint.textContent=hints[0];bsod.style.display='none';reboot.style.display='none';loading.style.display='flex';raf=requestAnimationFrame(tick)}
+document.getElementById('restart').addEventListener('click',()=>{bsod.style.display='none';reboot.style.display='flex';document.getElementById('bootline').textContent='RESTARTING EXPERIENCE…';setTimeout(start,2400)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!done&&loading.style.display!=='none'){/* elapsed time continues on the animation clock */}});
+start();
+</script>
+</body>
+</html>
